@@ -1,4 +1,5 @@
 const fs=require('fs');
+const assetRevision=require('crypto').createHash('sha256').update(fs.readFileSync('backend/live.js')).update(fs.readFileSync('backend/live-cards.css')).digest('hex').slice(0,12);
 const version=fs.readFileSync('VERSION','utf8').trim();
 const original=fs.readFileSync('dist/index.html','utf8');
 const style=original.slice(original.indexOf('<style>'),original.indexOf('</style>')+8);
@@ -17,9 +18,8 @@ liveHtml=liveHtml.replaceAll('v=10','v=17');
 const flag="<svg class=\"signature-flag\" width=\"21\" height=\"14\" viewBox=\"0 -30000 90000 60000\" role=\"img\" aria-label=\"Türk bayrağı\"><path fill=\"#e30a17\" d=\"m0-30000h90000v60000H0z\"/><path fill=\"#fff\" d=\"m41750 0 13568-4408-8386 11541V-7133l8386 11541zm925 8021a15000 15000 0 1 1 0-16042 12000 12000 0 1 0 0 16042z\"/></svg>";
 liveHtml=liveHtml.replace(/<footer[\s\S]*?<\/footer>/,'<footer class="system-footer"><div class="footer-meta"><span>HOP v0.23.0</span><span id="lastUpdate"></span><span class="creator-signature" style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:#7556a0">ckirnak'+flag+'</span></div></footer>').replaceAll('v=17','v=19');
 liveHtml=liveHtml.replace('<div class="footer-meta">','<div class="footer-meta" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center">').replace('<span id="lastUpdate"></span>','<span id="lastUpdate" style="grid-column:3;grid-row:1;justify-self:end;text-align:right"></span>').replace('style="display:inline-flex;','style="grid-column:2;grid-row:1;justify-self:center;display:inline-flex;');
-liveHtml=liveHtml.replaceAll('0.23.0',version).replaceAll('v=19','v='+version);
-liveHtml=liveHtml.replace('<div class="header-tools">','<div class="header-tools"><div id="updateNotice" class="update-notice" role="status" hidden><span id="updateText"></span><a id="updateLink" href="https://github.com/ckirnak/HOP/releases/latest" target="_blank" rel="noopener noreferrer">Sürümü incele ↗</a></div>');
-liveHtml=liveHtml.replace('<div class="header-tools">','<div class="header-tools"><button id="openUpdate" class="web-update-button" type="button">Güncelle</button>');
+liveHtml=liveHtml.replaceAll('0.23.0',version).replaceAll('v=19','v='+version+'-'+assetRevision);
+liveHtml=liveHtml.replace('<div class="header-tools">','<div class="header-tools"><div id="updateNotice" class="update-notice" role="status" hidden><span id="updateText"></span><a id="updateLink" href="https://github.com/ckirnak/HOP/releases/latest" target="_blank" rel="noopener noreferrer">Sürümü incele ↗</a><button id="openUpdate" class="web-update-button" type="button">Güncelle</button></div>');
 liveHtml=liveHtml.replace('</main>',`<dialog id="updateDialog" class="update-dialog"><form id="updateForm"><h2>HOP güncellemesi</h2><p>Issabel yönetici oturumu ve şifreniz gerekir. Son kararlı sürüm doğrulanır, yedek alınır ve HOP güncellenir.</p><p><a href="/index.php" target="_blank" rel="noopener">Issabel yönetici girişi ↗</a> · <button id="refreshUpdateAuth" type="button">Oturumu kontrol et</button></p><label>Issabel yönetici şifresi<input id="updatePassword" type="password" autocomplete="current-password" required maxlength="256"></label><p id="webUpdateStatus" role="status"></p><div class="update-actions"><button id="startUpdate" type="submit" disabled>Şifreyle doğrula ve güncelle</button><button id="closeUpdate" type="button">Kapat</button></div></form></dialog></main>`);
 fs.writeFileSync('backend/live.html',liveHtml);
 fs.copyFileSync('dist/operator.css','backend/operator.css');

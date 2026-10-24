@@ -31,9 +31,10 @@ function renderUpdate(info){
   if(notice.hidden)return;
   const valid=/^\d+\.\d+\.\d+$/.test(info.latest||'');
   if(!valid){notice.hidden=true;return;}
-  $('updateText').textContent='Yeni sürüm: '+info.latest+(info.status==='unavailable'?' · Son bilinen sürüm':'');
+  $('updateText').textContent='Yeni sürüm:';
   const link=$('updateLink');
-  link.href='https://github.com/ckirnak/HOP/releases/latest';
+  link.textContent='v'+info.latest+' ↗';
+  link.href='https://github.com/ckirnak/HOP/releases/tag/v'+info.latest;
   notice.title=(info.checked_at?'Son kontrol: '+new Date(info.checked_at*1000).toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'})+' · ':'')+'Kurulum otomatik yapılmaz.';
 }
 function markLive(online){transportOnline=online;const node=$('liveIndicator');node.classList.toggle('online',online);node.classList.toggle('offline',!online);$('liveLabel').textContent=online?'CANLI':'BAĞLANIYOR';}

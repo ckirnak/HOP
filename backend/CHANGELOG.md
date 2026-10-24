@@ -2,6 +2,9 @@
 
 ## 0.27.0 — 2026-10-24
 
+- Aynı sürüm düzeltmesi: Güncelle düğmesi yalnız yeni sürüm bulunduğunda görünür; yeni sürüm numarası ilgili GitHub sürüm sayfasını açar. Güncel kurulumda bu alan tamamen gizlidir.
+- Aynı sürümde yenilenen ön yüz dosyaları için içerik tabanlı önbellek anahtarı eklendi.
+
 - Panel başlığına yönetici doğrulamalı web güncelleme düğmesi eklendi.
 - Geçerli Issabel administrator oturumu, yeniden şifre doğrulaması, HTTPS ve CSRF kontrolü gerekir.
 - Sabit systemd görevi yalnız HOP deposunun son kararlı paketini indirir; SHA-256 doğrular ve yedekli güncelleme yapar.
