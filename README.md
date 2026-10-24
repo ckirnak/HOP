@@ -2,6 +2,11 @@
 
 **Santralinizi tek ekranda, canlı ve ücretsiz izleyin.**
 
+![HOP operatör paneli — kurgusal dahili ve çağrı bilgileriyle örnek görünüm](https://raw.githubusercontent.com/ckirnak/HOP/main/docs/hop-preview.png)
+
+*Görseldeki tüm dahili adları, çağrılar ve hatlar örnek veridir. Gerçek kişi,
+telefon numarası veya kurum bilgisi içermez; önizleme gerçek santrale bağlı değildir.*
+
 HOP, Issabel ve Asterisk tabanlı telefon santralleri için geliştirilen,
 Flash gerektirmeyen bir web operatör panelidir. Dahililerin durumunu, aktif
 çağrıları, kuyrukları ve trunk kayıtlarını modern bir tarayıcıdan gösterir.
