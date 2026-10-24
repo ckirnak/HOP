@@ -6,7 +6,7 @@ if (!/^\d+\.\d+\.\d+$/.test(version)) throw Error('Invalid VERSION');
 cp.execFileSync(process.execPath, ['backend/build-live.cjs']);
 const files = ['README.md','LICENSE','VERSION','AGENTS.md','.gitignore','install.sh',
  ...['index.html','app.js','operator.css'].map(n=>'dist/'+n),
- ...['server.py','refresh_metadata.py','gateway.php','hop.service','hop-stream.conf','install.py','setup.py','update.py','test_update.py','test_server.py','test_setup.py','build-live.cjs','live.html','live.js','live-cards.css','operator.css','README.md','CHANGELOG.md'].map(n=>'backend/'+n),
+ ...['server.py','refresh_metadata.py','gateway.php','hop.service','hop-stream.conf','install.py','setup.py','update.py','test_update.py','test_web_update.py','test_server.py','test_setup.py','build-live.cjs','live.html','live.js','live-cards.css','operator.css','README.md','CHANGELOG.md','admin.php','web_update.py','hop-web-update.service','hop-web-update.sudoers'].map(n=>'backend/'+n),
  ...['ARCHITECTURE.md','INSTALL.md','RELEASING.md','VALIDATION.md'].map(n=>'docs/'+n),'scripts/package.cjs'];
 const patterns = [
  /\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b/,
