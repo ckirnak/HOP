@@ -1,5 +1,23 @@
 # Çalışma mantığı
 
+## Yönetici onaylı web güncellemesi
+
+`admin.php`, mevcut Issabel oturumunu ACL veritabanında tekrar doğrular; administrator
+grubu, HTTPS, POST/CSRF ve her başlatmada yeniden parola kontrolü uygular. Normal
+panelin anonim erişimi bu uç noktaya yönetici yetkisi vermez. Issabel'in yerel parola
+doğrulama API'si kullanılır; ayrı parola deposu oluşturulmaz.
+
+PHP yalnız sabit `sudo -n /usr/bin/systemctl --no-block start hop-web-update.service`
+komutunu çağırır. Sudo kuralı başka servis/komut için izin vermez. Root'a ait tek
+seferlik Python görevi, sabit GitHub deposunun kararlı Release paketini indirir,
+GitHub SHA-256 özetini ve paket yollarını doğrular; yerel güncelleyiciyle yedekli
+kurulum yapar. CLI ve web aynı işlem kilidini kullanır. GitHub depo yöneticilerinin
+yayınladığı kod bu yolla root yetkili güncelleme zincirinin parçasıdır.
+
+Başarısız AMI kontrolünde uygulama dosyaları geri alınır. İşlem zorla öldürülürse
+veya sunucu kapanırsa otomatik geri dönüş garanti edilmez; yönetici yedeği kullanır.
+Yeni yardımcı dosyalar, systemd ünitesi ve sudoers kuralı bu sürümün geçişine dahildir.
+
 ## Güncelleme bildirimi
 
 HOP servisi başlangıçta ve 6 saatte bir GitHub'ın

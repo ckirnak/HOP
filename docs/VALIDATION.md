@@ -1,5 +1,16 @@
 # HOP doğrulama kayıtları
 
+## 0.27.0 — 2026-10-24
+
+- Python 3.6.8 üzerinde 28 test geçti; sabit depo URL'si, SHA-256 metadata şartı,
+  ön sürüm reddi ve ZIP dizin geçişi engellemesi dahil.
+- PHP sözdizimi, sudoers sözdizimi ve systemd ünite doğrulaması geçti.
+- Oturumsuz yönetim isteği reddedildi. Mevcut izleme uçları anonim kalır.
+- Gerçek Issabel ACL kütüphanesiyle yönetici oturumu doğrulandı; yanlış CSRF
+  ve yanlış parola istekleri güncelleme başlatmadan reddedildi. Geçici test oturumları silindi.
+- Güncelleme dosya işlemleri ve hata geri dönüşü geçici dizinde test edildi.
+  Yönetici şifresiyle gerçek kullanıcı tarayıcısından güncelleme testi ayrıca yapılmalıdır.
+
 ## 0.26.0 — 2026-10-24
 
 - Python 3.6.8 üzerinde 24 test geçti; sürüm karşılaştırma, ön sürüm/geçersiz etiket

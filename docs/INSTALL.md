@@ -83,6 +83,32 @@ oluşturulan işletim sistemi kullanıcısını kaldırın. Santrali yeniden ba�
 
 ## Mevcut kurulumu güncellemek
 
+### Web arayüzünden (0.27.0 ve sonrası)
+
+Panelde **Güncelle** düğmesine basın. Yönetici oturumunuz yoksa penceredeki
+**Issabel yönetici girişi** bağlantısından normal Issabel girişini (varsa 2FA dahil)
+tamamlayın, HOP'a dönüp **Oturumu kontrol et** seçin. Issabel administrator grubundaki
+hesabınızın şifresini yeniden girip **Şifreyle doğrula ve güncelle** düğmesine basın.
+Bu parola SSH/root veya AMI parolası değil, Issabel web yönetici parolasıdır.
+
+Pencere kontrol, indirme, yedek/kurulum ve sonuç durumlarını gösterir. Pencereyi
+kapatmak başlamış sunucu işlemini iptal etmez. Kurulum bitince sayfayı yenileyin.
+Zaten güncelseniz dosyalar değiştirilmez. Parola işlem isteğinden sonra tarayıcı
+alanından temizlenir, HOP tarafından kaydedilmez. İstek HTTPS ile yapılır.
+
+0.26.0 ve daha eski kurulumlar web yöneticisi bileşenlerini henüz içermez;
+önce aşağıdaki SSH sihirbazıyla 0.27.0'a geçin. İlk kurucu/yükseltici, yalnızca
+`hop-web-update.service` başlatmaya izin veren dar kapsamlı sudoers kuralını kurar.
+Servis root olarak sabit HOP deposunu kontrol eder; kullanıcıdan komut/URL almaz.
+PHP-FPM işletim sistemi kullanıcısı `asterisk`, sudo ve visudo gereklidir.
+PHP `exec` devre dışıysa web güncellemesi çalışmaz; SSH yolu kullanılabilir.
+
+Hata halinde `journalctl -u hop-web-update --no-pager -n 50` komutunu kullanın.
+Web güncelleme durumu `/var/lib/hop-web-update/status.json` dosyasındadır; yalnız
+yetkili yönetim uç noktası üzerinden gösterilir. Geri dönüş SSH sihirbazıyla yapılır.
+
+### SSH üzerinden
+
 1. GitHub deposundaki Releases bölümünden daha yeni sürümün kaynak ZIP paketini indirin.
    Bildirim için Watch → Custom → Releases seçeneğini açabilirsiniz.
 2. Sürüm notlarını okuyun. ZIP'i sunucuda **ayrı bir kaynak klasörüne** açın;
