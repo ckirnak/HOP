@@ -1,5 +1,24 @@
 # 0.25.0 doğrulama kaydı — 2026-10-24
 
+## Gerçek kurulumda güncelleme doğrulaması
+
+2026-10-24 tarihinde mevcut bir Issabel/Asterisk 18 kurulumunda, GitHub Release
+ZIP paketi indirilip SHA-256 ve dosya özetleri doğrulandı. Sihirbazın
+`--update --check` ön kontrolü ve ardından onaylı `--update` akışıyla
+0.23.0 → 0.25.0 geçişi başarıyla uygulandı.
+
+- Otomatik uygulama dosyası yedeği oluşturuldu.
+- HOP servisi aktif, AMI bağlantısı sağlıklı ve HTTPS üzerinden SSE state olayı alınıyor.
+- HTTPS sayfasında 0.25.0 sürümü doğrulandı.
+- AMI parolası/hesap dosyaları, systemd, Apache ve cron yapılandırmaları
+  güncelleme öncesi/sonrası özetleriyle karşılaştırıldı; değişmediler.
+- Gerçek santralde hata tetikleme veya geri dönüş denemesi yapılmadı.
+- Sıfırdan kurulum ve farklı Issabel sürümleri için uçtan uca doğrulama hâlâ gereklidir.
+
+Tanıtım ekran görüntüsü ayrı bir önizlemede tamamen kurgusal verilerle hazırlanmıştır.
+
+## Yayın öncesi test kaydı
+
 - Asterisk izleme kodunun 7 testi geçti: AMI parçalı çerçeve okuma, olay tetikleme,
   durum eşleştirme, aynı çağrının kanallarını birleştirme ve eşzamanlı çağrılar.
 - Sihirbazın 5 testi geçti: Linux/root gereksinimi, ön kontrol hatasında durma,
