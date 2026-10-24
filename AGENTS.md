@@ -5,7 +5,7 @@
 Kullanıcının kalıcı talebi: Her yayınlanan uygulama güncellemesinde sürümü artır
 ve yapılan değişiklikleri `backend/CHANGELOG.md` dosyasına Türkçe yaz.
 
-- Hazırlanan sürüm: 0.26.0; sonraki uygulama değişikliği 0.27.0.
+- Hazırlanan sürüm: 0.27.0; sonraki uygulama değişikliği 0.28.0.
   Gerçek son sürümü her zaman güncelleme geçmişinden ve kaynaklardan doğrula.
 - Aynı yayında tamamlanan değişiklikler tek sürümdür. Sadece soru yanıtlama,
   salt okunur inceleme veya çalışma talimatını kaydetme için sürüm artırma.

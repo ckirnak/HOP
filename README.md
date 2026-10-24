@@ -81,7 +81,12 @@ eder. Daha yeni bir sürüm varsa üst çubukta **Yeni sürüm** ve **Sürümü 
 bağlantısı görünür. Kontrol sunucuda ortak önbellekle yapılır; sekme sayısı
 GitHub sorgu sayısını artırmaz. İnternet kesintisi çağrı izlemeyi etkilemez.
 GitHub'a çağrı verisi veya parola gönderilmez (normal HTTPS bağlantısında çıkış IP'si görülür).
-Bildirim otomatik kurulum yapmaz; aşağıdaki sihirbaz adımlarını kullanın.
+Bildirim otomatik kurulum yapmaz. **Güncelle** düğmesiyle yönetim penceresini açın,
+Issabel administrator hesabınızla giriş yapın ve şifrenizi yeniden girerek
+güncellemeyi başlatın. İşlem bu pencereden izlenir. SSH sihirbazı da kullanılabilir.
+
+Web güncellemesi 0.27.0 ve sonrasında vardır. Daha eski kurulumları önce SSH
+sihirbazıyla 0.27.0'a yükseltin. Genel izleme paneli giriş istememeye devam eder.
 
 GitHub deposunda **Watch → Custom → Releases** bildirimlerini açabilirsiniz.
 Yeni Release'in ZIP paketini indirip santralde ayrı bir klasöre açın. O klasörde:
