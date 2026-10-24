@@ -1,0 +1,21 @@
+[Unit]
+Description=HOP Asterisk AMI monitor
+After=network.target asterisk.service
+
+[Service]
+Type=simple
+User=hop
+Group=hop
+EnvironmentFile=/etc/hop/ami.env
+ExecStart=/usr/bin/python3 /opt/hop/server.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
