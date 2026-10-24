@@ -1,0 +1,11 @@
+.openai/
+release/
+__pycache__/
+*.pyc
+*.env
+metadata.json
+*.log
+*.pem
+*.key
+*-backups/
+.DS_Store
