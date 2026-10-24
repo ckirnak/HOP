@@ -76,6 +76,13 @@ Kurucu firewall açmaz ve AMI'yi internete yayınlamaz.
 
 ## Yeni sürümleri nasıl alırım?
 
+Panel, GitHub'daki son kararlı sürümü servis açılışında ve **6 saatte bir** kontrol
+eder. Daha yeni bir sürüm varsa üst çubukta **Yeni sürüm** ve **Sürümü incele**
+bağlantısı görünür. Kontrol sunucuda ortak önbellekle yapılır; sekme sayısı
+GitHub sorgu sayısını artırmaz. İnternet kesintisi çağrı izlemeyi etkilemez.
+GitHub'a çağrı verisi veya parola gönderilmez (normal HTTPS bağlantısında çıkış IP'si görülür).
+Bildirim otomatik kurulum yapmaz; aşağıdaki sihirbaz adımlarını kullanın.
+
 GitHub deposunda **Watch → Custom → Releases** bildirimlerini açabilirsiniz.
 Yeni Release'in ZIP paketini indirip santralde ayrı bir klasöre açın. O klasörde:
 
