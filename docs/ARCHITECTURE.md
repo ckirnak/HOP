@@ -1,5 +1,20 @@
 # Çalışma mantığı
 
+## Güncelleme bildirimi
+
+HOP servisi başlangıçta ve 6 saatte bir GitHub'ın
+`https://api.github.com/repos/ckirnak/HOP/releases/latest` adresinden son kararlı
+sürümü sorar. Kurulu `/opt/hop/VERSION` değeriyle sayısal karşılaştırma yapılır.
+Taslak, ön sürüm ve desteklenmeyen etiketler bildirilmez. Yanıt bellekte tutulur;
+ETag ile değişmemiş yanıt tekrar kullanılabilir. Servis yeniden başlayınca önbellek sıfırlanır.
+
+Kontrol ayrı iş parçacığındadır, ağ zaman aşımı 10 saniyedir. Hata halinde son
+bilinen sürüm korunur ve bir sonraki 6 saatlik çevrimde tekrar denenir. Sonuç
+mevcut SSE durumuna eklenerek tüm tarayıcılara iletilir; tarayıcı GitHub API'sine
+istek yapmaz. Yeni sürüm bağlantısına kullanıcı tıkladığında GitHub açılır.
+Çağrı/kişi verisi ve parolalar gönderilmez; GitHub normal HTTPS isteğinin çıkış
+IP adresini görür. Güncelleme kurulumu yönetici tarafından sihirbazla başlatılır.
+
 ## Veri toplama
 
 HOP iki yerel AMI bağlantısı kullanır: biri olayları dinler, diğeri durum

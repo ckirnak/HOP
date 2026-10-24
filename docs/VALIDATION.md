@@ -1,4 +1,15 @@
-# 0.25.0 doğrulama kaydı — 2026-10-24
+# HOP doğrulama kayıtları
+
+## 0.26.0 — 2026-10-24
+
+- Python 3.6.8 üzerinde 24 test geçti; sürüm karşılaştırma, ön sürüm/geçersiz etiket
+  reddi, HTTP 304 önbelleği, ağ hatası ve AMI yayınında bildirim koruması dahil.
+- JavaScript kontrolünde yeni sürümde görünme, güncel sürümde gizlenme ve geçersiz
+  sürüm metnini reddetme doğrulandı.
+- Santralden gerçek GitHub Release API isteği ve ETag yanıtı doğrulandı.
+- Otomatik kurulum yapılmaz; kontrol hatası AMI toplama iş parçacığını engellemez.
+
+## 0.25.0 doğrulama kaydı — 2026-10-24
 
 ## Gerçek kurulumda güncelleme doğrulaması
 
