@@ -18,6 +18,7 @@ const flag="<svg class=\"signature-flag\" width=\"21\" height=\"14\" viewBox=\"0
 liveHtml=liveHtml.replace(/<footer[\s\S]*?<\/footer>/,'<footer class="system-footer"><div class="footer-meta"><span>HOP v0.23.0</span><span id="lastUpdate"></span><span class="creator-signature" style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:#7556a0">ckirnak'+flag+'</span></div></footer>').replaceAll('v=17','v=19');
 liveHtml=liveHtml.replace('<div class="footer-meta">','<div class="footer-meta" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center">').replace('<span id="lastUpdate"></span>','<span id="lastUpdate" style="grid-column:3;grid-row:1;justify-self:end;text-align:right"></span>').replace('style="display:inline-flex;','style="grid-column:2;grid-row:1;justify-self:center;display:inline-flex;');
 liveHtml=liveHtml.replaceAll('0.23.0',version).replaceAll('v=19','v='+version);
+liveHtml=liveHtml.replace('<div class="header-tools">','<div class="header-tools"><div id="updateNotice" class="update-notice" role="status" hidden><span id="updateText"></span><a id="updateLink" href="https://github.com/ckirnak/HOP/releases/latest" target="_blank" rel="noopener noreferrer">Sürümü incele ↗</a></div>');
 fs.writeFileSync('backend/live.html',liveHtml);
 fs.copyFileSync('dist/operator.css','backend/operator.css');
 

@@ -5,6 +5,7 @@ const colors={'Müsait':'#16a34a','Görüşmede':'#dc2626','Çalıyor':'#f97316'
 const telephone='<svg viewBox="0 0 36 34" aria-hidden="true"><path class="phone-base" d="M9 15h18l5 12a2 2 0 0 1-2 3H6a2 2 0 0 1-2-3Z"/><path class="receiver" d="M4 12V8C4 2 32 2 32 8v4h-7V9a22 22 0 0 0-14 0v3Z"/><circle class="dial-rim" cx="18" cy="22" r="6.5"/><circle class="status-dot" cx="18" cy="22" r="4.8"/></svg>';
 function render(){
   if(!snapshot)return;
+  renderUpdate(snapshot.update);
   const fresh=snapshot.connected,people=snapshot.extensions||[],calls=snapshot.calls||[],queues=snapshot.queues||[];
   $('connection').textContent=fresh?'● Canlı bağlantı · AMI / SSE':'● Bağlantı yok · veriler güncel değil';
   $('connection').style.background=fresh?'#dff2e9':'#fce2e2';
@@ -23,6 +24,18 @@ function render(){
   $('trunks').innerHTML=(snapshot.trunks||[]).length?snapshot.trunks.map(t=>`<div class="resource-tile trunk-tile"><div class="trunk-registration"><i class="trunk-led ${fresh?(t.registered?'registered':'unregistered'):'unknown'}"></i><b>${fresh?esc(t.registration_state):'Güncel değil'}</b></div><span class="icon">⇄</span><strong>${esc(t.technology)} / ${esc(t.id)}</strong><span>${esc(t.status)}</span></div>`).join(''):'<p class="small">Trunk kaydı bulunamadı.</p>';
 }
 let feed=null,lastSignal=Date.now(),transportOnline=false;
+function renderUpdate(info){
+  const notice=$('updateNotice');
+  if(!notice)return;
+  notice.hidden=!(info&&info.available);
+  if(notice.hidden)return;
+  const valid=/^\d+\.\d+\.\d+$/.test(info.latest||'');
+  if(!valid){notice.hidden=true;return;}
+  $('updateText').textContent='Yeni sürüm: '+info.latest+(info.status==='unavailable'?' · Son bilinen sürüm':'');
+  const link=$('updateLink');
+  link.href='https://github.com/ckirnak/HOP/releases/latest';
+  notice.title=(info.checked_at?'Son kontrol: '+new Date(info.checked_at*1000).toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'})+' · ':'')+'Kurulum otomatik yapılmaz.';
+}
 function markLive(online){transportOnline=online;const node=$('liveIndicator');node.classList.toggle('online',online);node.classList.toggle('offline',!online);$('liveLabel').textContent=online?'CANLI':'BAĞLANIYOR';}
 function connect(){
   if(feed)feed.close();

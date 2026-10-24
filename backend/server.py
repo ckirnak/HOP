@@ -6,6 +6,8 @@ import re
 import socket
 import threading
 import time
+import urllib.request
+import urllib.error
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 
@@ -265,6 +267,64 @@ changed = threading.Condition(lock)
 revision = 0
 dirty = threading.Event()
 event_online = False
+update_info = {'status': 'checking', 'available': False, 'checked_at': None}
+
+
+def release_version(value):
+    match = re.fullmatch(r'v?(\d+)\.(\d+)\.(\d+)', str(value))
+    if not match:
+        raise ValueError('Unsupported release version')
+    return tuple(int(n) for n in match.groups())
+
+
+def release_info(release, current):
+    tag = release.get('tag_name', '')
+    latest = release_version(tag)
+    if release.get('draft') or release.get('prerelease'):
+        raise ValueError('Not a stable release')
+    return {'status': 'ok', 'current': current, 'latest': '.'.join(map(str, latest)),
+            'available': latest > release_version(current), 'checked_at': time.time(),
+            'url': 'https://github.com/ckirnak/HOP/releases/tag/' + tag}
+
+
+def fetch_release(current, etag=None, previous=None):
+    headers = {'Accept': 'application/vnd.github+json', 'User-Agent': 'HOP-Update-Checker',
+               'X-GitHub-Api-Version': '2022-11-28'}
+    if etag:
+        headers['If-None-Match'] = etag
+    request = urllib.request.Request('https://api.github.com/repos/ckirnak/HOP/releases/latest', headers=headers)
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            # Only release metadata is requested; no PBX data or credentials leave the server.
+            body = response.read(1024 * 1024 + 1)
+            if len(body) > 1024 * 1024:
+                raise ValueError('Response too large')
+            return release_info(json.loads(body.decode('utf-8')), current), response.headers.get('ETag')
+    except urllib.error.HTTPError as error:
+        if error.code == 304 and previous and previous.get('latest'):
+            result = dict(previous, status='ok', checked_at=time.time(), current=current)
+            result['available'] = release_version(result['latest']) > release_version(current)
+            return result, etag
+        raise
+
+
+def check_updates():
+    global update_info, revision
+    etag = None
+    while True:
+        try:
+            with open('/opt/hop/VERSION') as file:
+                current = file.read().strip()
+            result, etag = fetch_release(current, etag, update_info)
+        except Exception:
+            # Keep the last known release on network/API failure; never block AMI collection.
+            result = dict(update_info, status='unavailable')
+        with changed:
+            update_info = result
+            state['update'] = dict(result)
+            revision += 1
+            changed.notify_all()
+        time.sleep(6 * 60 * 60)
 
 
 def publish(payload):
@@ -272,6 +332,7 @@ def publish(payload):
     with changed:
         state.clear()
         state.update(payload)
+        state['update'] = dict(update_info)
         revision += 1
         changed.notify_all()
 
@@ -390,6 +451,7 @@ class Server(ThreadingMixIn, HTTPServer):
 
 
 if __name__ == '__main__':
+    threading.Thread(target=check_updates, daemon=True).start()
     threading.Thread(target=listen_events, daemon=True).start()
     threading.Thread(target=collect, daemon=True).start()
     Server(('127.0.0.1', 8765), Handler).serve_forever()

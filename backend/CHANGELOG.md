@@ -1,5 +1,13 @@
 # HOP sürüm geçmişi
 
+## 0.26.0 — 2026-10-24
+
+- GitHub'daki son kararlı sürüm için panel başlığına güncelleme bildirimi eklendi.
+- Kontrol başlangıçta ve 6 saatte bir, santral servisinde yapılır; sonuç tüm panellere SSE ile iletilir.
+- ETag önbelleği, 10 saniye bağlantı zaman aşımı ve API hatasında son bilinen sürümü koruma eklendi.
+- GitHub'a çağrı/kişi verisi veya AMI kimlik bilgileri gönderilmez; otomatik kurulum yapılmaz.
+- Sürüm karşılaştırması, ön sürüm reddi, önbellek ve hata davranışı testleri eklendi.
+
 ## 0.25.0 — 2026-10-24 (dağıtım hazırlığı)
 
 - Sihirbaza mevcut kurulumu tanıma, --update ve --rollback seçenekleri eklendi.

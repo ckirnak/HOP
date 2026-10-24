@@ -1,10 +1,41 @@
 import unittest
 import socket
+import urllib.error
+from unittest.mock import patch
+from server import release_info, fetch_release, publish, state, update_info
 from server import AMI, ami_event, dirty
 from server import extension_state, make_snapshot, duration_seconds, build_calls
 
 
 class MonitorTests(unittest.TestCase):
+    def test_release_versions_use_numeric_order(self):
+        for latest, current, expected in [('v0.26.0', '0.25.0', True), ('v0.9.0', '0.26.0', False), ('v0.26.0', '0.26.0', False)]:
+            self.assertEqual(release_info({'tag_name': latest}, current)['available'], expected)
+
+    def test_release_rejects_preview_and_unsafe_tags(self):
+        for release in [{'tag_name': 'v0.27.0-beta'}, {'tag_name': 'https://example.org'}, {'tag_name': 'v0.27.0', 'prerelease': True}, {'tag_name': 'v0.27.0', 'draft': True}]:
+            with self.assertRaises(ValueError):
+                release_info(release, '0.26.0')
+
+    def test_release_304_reuses_cache(self):
+        cached = release_info({'tag_name': 'v0.27.0'}, '0.26.0')
+        error = urllib.error.HTTPError('https://api.github.com', 304, 'Not Modified', {}, None)
+        with patch('server.urllib.request.urlopen', side_effect=error) as fetch:
+            result, etag = fetch_release('0.26.0', 'test-etag', cached)
+            self.assertTrue(result['available'])
+            self.assertEqual(etag, 'test-etag')
+            self.assertEqual(fetch.call_args[0][0].data, None)
+
+    def test_release_network_error_is_not_reported_as_current(self):
+        with patch('server.urllib.request.urlopen', side_effect=OSError('offline')):
+            with self.assertRaises(OSError):
+                fetch_release('0.26.0')
+
+    def test_ami_publish_preserves_update_info(self):
+        with patch.dict(update_info, {'available': True, 'latest': '0.27.0'}):
+            publish({'connected': True})
+            self.assertEqual(state['update']['latest'], '0.27.0')
+
     def test_ami_parser_keeps_partial_frames_after_timeout(self):
         reader, writer = socket.socketpair()
         ami = AMI.__new__(AMI)
