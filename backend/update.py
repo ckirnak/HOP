@@ -12,6 +12,10 @@ FILES = {'server.py': '/opt/hop/server.py', 'refresh_metadata.py': '/opt/hop/ref
          'live.html': '/opt/hop/live.html', 'gateway.php': '/var/www/html/hop/index.php',
          'live.js': '/var/www/html/hop/live.js', 'operator.css': '/var/www/html/hop/operator.css',
          'live-cards.css': '/var/www/html/hop/live-cards.css', '../VERSION': '/opt/hop/VERSION'}
+WEB_FILES = {'admin.php': '/var/www/html/hop/admin.php', 'web_update.py': '/opt/hop/web_update.py',
+             'update.py': '/opt/hop/update.py', 'hop-web-update.service': '/etc/systemd/system/hop-web-update.service',
+             'hop-web-update.sudoers': '/etc/sudoers.d/hop-web-update'}
+FILES.update(WEB_FILES)
 
 
 def version_number(value):
@@ -64,14 +68,14 @@ class Updater:
                 raise ValueError('Eksik/geçersiz paket dosyası: ' + name)
             if target.is_symlink() or any(p.is_symlink() for p in target.parents):
                 raise ValueError('Sembolik bağlantı hedefi desteklenmez: ' + dest)
-            if name != '../VERSION' and not target.is_file():
+            if name != '../VERSION' and name not in WEB_FILES and not target.is_file():
                 raise ValueError('Eksik kurulum dosyası: ' + dest)
         for required in ['/etc/hop/ami.env', '/etc/systemd/system/hop.service']:
             if not self.target(required).is_file():
                 raise ValueError('Mevcut HOP kurulumu bulunamadı: ' + required)
         if 'HOP v' + new not in (self.source / 'live.html').read_text():
             raise ValueError('Paket HTML sürümü VERSION ile uyuşmuyor.')
-        for name in ['server.py', 'refresh_metadata.py']:
+        for name in ['server.py', 'refresh_metadata.py', 'web_update.py', 'update.py']:
             compile((self.source / name).read_text(), name, 'exec')
         return old, new
 
@@ -116,12 +120,15 @@ class Updater:
             elif target.exists():
                 target.unlink()
         self.run(['systemctl', 'start', 'hop'])
+        self.run(['systemctl', 'daemon-reload'])
         return manifest['old']
 
     def apply(self):
         old, new = self.check()
         if not self.health():
             raise RuntimeError('Güncelleme öncesi AMI sağlıklı değil; dosyalar değiştirilmedi.')
+        self.run(['/usr/sbin/visudo', '-cf', str(self.source / 'hop-web-update.sudoers')])
+        self.run(['php', '-l', str(self.source / 'admin.php')])
         self.backups.mkdir(mode=0o700, parents=True, exist_ok=True)
         backup = Path(tempfile.mkdtemp(prefix=time.strftime('%Y%m%d-%H%M%S-'), dir=str(self.backups)))
         manifest = {'old': old, 'new': new, 'files': {}}
@@ -138,6 +145,8 @@ class Updater:
             self.run(['systemctl', 'stop', 'hop'])
             for name, dest in FILES.items():
                 self.atomic_copy(self.source / name, self.target(dest))
+            os.chmod(str(self.target('/etc/sudoers.d/hop-web-update')), 0o440)
+            self.run(['systemctl', 'daemon-reload'])
             self.run(['systemctl', 'start', 'hop'])
             if not self.health():
                 raise RuntimeError('Yeni sürümün AMI bağlantısı doğrulanamadı.')

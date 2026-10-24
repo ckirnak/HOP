@@ -75,3 +75,9 @@ subprocess.check_call(['systemctl', 'reload', 'httpd'])
 with open(os.path.join(backup_dir, 'installation.json'), 'w') as f:
     json.dump({'backup': backup_dir, 'original_custom_sha256': hashlib.sha256(original).hexdigest()}, f)
 print('HOP installed. Existing AMI configuration preserved. Backup: ' + backup_dir)
+from update import WEB_FILES
+subprocess.check_call(['/usr/sbin/visudo', '-cf', os.path.join(base, 'hop-web-update.sudoers')])
+for name, dest in WEB_FILES.items():
+    shutil.copyfile(os.path.join(base, name), dest)
+    os.chmod(dest, 0o440 if name.endswith('.sudoers') else 0o644)
+subprocess.check_call(['systemctl', 'daemon-reload'])

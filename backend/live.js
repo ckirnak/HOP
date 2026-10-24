@@ -48,3 +48,39 @@ function connect(){
 setInterval(()=>{if(Date.now()-lastSignal>25000){markLive(false);if(snapshot&&snapshot.connected){snapshot.connected=false;snapshot.error='Canlı bağlantıdan yanıt alınamıyor.';render();}}else if(snapshot&&transportOnline){document.querySelectorAll('.compact-call time').forEach((node,i)=>{const c=snapshot.calls[i];if(c){const elapsed=c.seconds+Math.max(0,Math.floor(Date.now()/1000-snapshot.updated));node.textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0');}});}},1000);
 $('search').oninput=render;$('filters').onclick=e=>{if(e.target.dataset.filter){filter=e.target.dataset.filter;render()}};
 connect();
+
+// Only administrators can use admin.php; the normal monitoring stream remains anonymous.
+let updateCsrf=null,updatePoll=null,updateWaiting=false,updateBaseline=null;
+async function updateAdminStatus(){
+  try{
+    const response=await fetch('admin.php',{credentials:'same-origin',cache:'no-store'});
+    const data=await response.json();
+    if(!response.ok){updateCsrf=null;$('startUpdate').disabled=true;$('webUpdateStatus').textContent=data.error||'Yönetici erişimi doğrulanamadı.';return;}
+    updateCsrf=data.csrf;
+    const progress=data.status||{},running=['checking','downloading','installing'].includes(progress.state);
+    if(!updateWaiting||progress.updated!==updateBaseline){
+      $('webUpdateStatus').textContent=progress.message||'Güncelleme için şifrenizi girin.';
+      updateWaiting=running;
+    }
+    $('startUpdate').disabled=updateWaiting||running;
+    if(running&&!updatePoll)updatePoll=setInterval(updateAdminStatus,2000);
+    if(!updateWaiting&&!running){clearInterval(updatePoll);updatePoll=null;}
+    updateBaseline=progress.updated;
+  }catch(error){$('webUpdateStatus').textContent='Yönetim servisine ulaşılamıyor. İşlem başladıysa sunucu durumunu kontrol edin.';}
+}
+$('openUpdate').onclick=()=>{$('updateDialog').showModal();updateAdminStatus();};
+$('refreshUpdateAuth').onclick=updateAdminStatus;
+$('closeUpdate').onclick=()=>{$('updateDialog').close();$('updatePassword').value='';clearInterval(updatePoll);updatePoll=null;};
+$('updateDialog').addEventListener('cancel',()=>{$('updatePassword').value='';clearInterval(updatePoll);updatePoll=null;});
+$('updateForm').onsubmit=async event=>{
+  event.preventDefault();if(!updateCsrf)return;
+  $('startUpdate').disabled=true;
+  const body=new URLSearchParams({csrf:updateCsrf,password:$('updatePassword').value});
+  $('updatePassword').value='';
+  try{
+    const response=await fetch('admin.php',{method:'POST',credentials:'same-origin',body});
+    const data=await response.json();$('webUpdateStatus').textContent=data.message||data.error||'İşlem sonucu alınamadı.';
+    if(response.ok){updateWaiting=true;clearInterval(updatePoll);updatePoll=setInterval(updateAdminStatus,2000);}
+    else{$('startUpdate').disabled=false;}
+  }catch(error){$('webUpdateStatus').textContent='İstek sonucu alınamadı. Oturumu kontrol et ile işlem durumunu kontrol edin.';$('startUpdate').disabled=false;}
+};

@@ -12,14 +12,15 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent
 TARGETS = ['/opt/hop', '/etc/hop', '/var/www/html/hop',
            '/etc/systemd/system/hop.service', '/etc/cron.d/hop-metadata',
-           '/etc/httpd/conf.d/zz-hop-stream.conf']
+           '/etc/httpd/conf.d/zz-hop-stream.conf', '/etc/systemd/system/hop-web-update.service',
+           '/etc/sudoers.d/hop-web-update']
 
 
 def preflight():
     errors = []
     if platform.system() != 'Linux' or os.geteuid() != 0:
         return ['Kurulum Linux santral üzerinde root yetkisi gerektirir.']
-    for command in ['asterisk', 'systemctl', 'httpd', 'php', 'useradd']:
+    for command in ['asterisk', 'systemctl', 'httpd', 'php', 'useradd', 'sudo', 'visudo']:
         if not shutil.which(command):
             errors.append('Eksik komut: ' + command)
     for path in ['/etc/asterisk/manager.conf', '/etc/asterisk/manager_custom.conf',
@@ -61,7 +62,8 @@ def preflight():
         if result.returncode:
             errors.append('PHP allow_url_fopen açık olmalı; FPM ayarını da doğrulayın.')
     for name in ['server.py', 'refresh_metadata.py', 'live.html', 'live.js',
-                 'live-cards.css', 'operator.css', 'gateway.php', 'hop.service', 'hop-stream.conf']:
+                 'live-cards.css', 'operator.css', 'gateway.php', 'hop.service', 'hop-stream.conf',
+                 'admin.php', 'web_update.py', 'update.py', 'hop-web-update.service', 'hop-web-update.sudoers']:
         if not (BASE / name).is_file():
             errors.append('Paket dosyası eksik: ' + name)
     return errors

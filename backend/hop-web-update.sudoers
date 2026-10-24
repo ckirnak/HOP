@@ -1,0 +1,2 @@
+# Only this fixed update unit can be started by the Issabel PHP user.
+asterisk ALL=(root) NOPASSWD: /usr/bin/systemctl --no-block start hop-web-update.service

@@ -1,0 +1,9 @@
+[Unit]
+Description=HOP administrator requested GitHub update
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/hop/web_update.py
+TimeoutStartSec=300
+UMask=0022

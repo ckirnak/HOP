@@ -52,3 +52,13 @@ header .header-stats{display:flex;align-items:center;justify-content:center;gap:
 .update-notice {display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;border:1px solid #f5d078;border-radius:8px;background:#fff4d6;color:#604000;font-size:12px;font-weight:700;}
 .update-notice[hidden] {display:none;}
 .update-notice a {color:#59358b;text-decoration:underline;white-space:nowrap;}
+.web-update-button {border:1px solid #ffffff70;background:#ffffff18;color:white;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;}
+.update-dialog {width:min(460px,90vw);border:0;border-radius:12px;padding:24px;color:#302541;box-shadow:0 20px 70px #0005;}
+.update-dialog::backdrop {background:#24173588;}
+.update-dialog h2 {margin-top:0;font-size:20px;}
+.update-dialog p {font-size:14px;line-height:1.5;}
+.update-dialog label {display:block;font-size:14px;font-weight:600;}
+.update-dialog input {box-sizing:border-box;display:block;width:100%;margin-top:8px;padding:10px;border:1px solid #b9afc6;border-radius:6px;}
+.update-dialog button {border:1px solid #b9afc6;border-radius:6px;padding:8px 10px;cursor:pointer;background:#f4effa;color:#513371;}
+.update-dialog button:disabled {opacity:.5;cursor:default;}
+.update-actions {display:flex;gap:8px;flex-wrap:wrap;}

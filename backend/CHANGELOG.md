@@ -1,5 +1,13 @@
 # HOP sürüm geçmişi
 
+## 0.27.0 — 2026-10-24
+
+- Panel başlığına yönetici doğrulamalı web güncelleme düğmesi eklendi.
+- Geçerli Issabel administrator oturumu, yeniden şifre doğrulaması, HTTPS ve CSRF kontrolü gerekir.
+- Sabit systemd görevi yalnız HOP deposunun son kararlı paketini indirir; SHA-256 doğrular ve yedekli güncelleme yapar.
+- İndirme/kurulum/sonuç durumları yönetici penceresinde gösterilir; parola saklanmaz.
+- Geçici tanıtım güncelleme bildirimi kaldırıldı; gerçek sürüm kontrolü korunur.
+
 ## 0.26.0 — 2026-10-24
 
 - GitHub'daki son kararlı sürüm için panel başlığına güncelleme bildirimi eklendi.
